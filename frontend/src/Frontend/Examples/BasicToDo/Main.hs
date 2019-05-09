@@ -30,10 +30,13 @@ new v m = case M.maxViewWithKey m of
 -- event for each key
 ulW :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
   => Dynamic t (MM T.Text) -> m (Dynamic t (MM (Event t Int)))
-ulW xs = elClass "ul" "list" $ listWithKey xs $ \k x -> elClass "li" "element" $ do
-  dynText x -- output the text
-  fmap (const k) <$> elClass "div" "delete" (button "x")
-  -- tag the event of button press with the key of the text
+ulW xs = elClass "ul" "todo-list" $ listWithKey xs $ \k x -> elClass "li" "todo-listelement" $ do
+  e <- fmap (const k) <$> (el "label" $ do
+                             elClass "span" "todo-listelement-text" $ dynText x
+                             ev <- elClass "span" "todo-listelement-delete" (button "x")
+                             pure ev
+                           )
+  return e
 
 -- output an input text widget with auto clean on return and return an
 -- event firing on return containing the string before clean
@@ -45,7 +48,9 @@ inputW = do
     input <- inputElement $ def
       & inputElementConfig_setValue .~ fmap (const "") send
       & inputElementConfig_elementConfig . elementConfig_initialAttributes .~
-        ("placeholder" =: "Write task and press enter")
+        ("id" =: "todo-input"
+         <> "placeholder" =: " What do you want to achieve?"
+         <> "onfocus" =: "this.placeholder = ' What do you want to achieve?'; setTimeout(()=>this.placeholder = '', 9000)")
     -- inputElement with content reset on send
   return $ tag (current $ _inputElement_value input) send
   -- tag the send signal with the inputText value BEFORE resetting
@@ -67,4 +72,6 @@ listW e = do
   return ()
 
 app :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m) => m ()
-app = el "div" $ inputW >>= listW
+app = elAttr "div" ("id" =: "todo-background" <>
+                "onclick" =: "document.getElementById('todo-input').focus()") $ do
+        inputW >>= listW
