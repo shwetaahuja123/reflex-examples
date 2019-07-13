@@ -210,10 +210,8 @@ article.talk {
   background-repeat: no-repeat;
   --background-image-ratio: 1080/1920;
 
-  width: 54vw;
-  height: calc(54vw * var(--background-image-ratio)); 
-  min-width: 720px;
-  min-height: calc(720px * var(--background-image-ratio));
+  width: 720px;
+  height: calc(720px * var(--background-image-ratio));
 }
 
 #todo-input {
