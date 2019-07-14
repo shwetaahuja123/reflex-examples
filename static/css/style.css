@@ -217,7 +217,7 @@ article.talk {
 #todo-input {
   font-family: Nothing You Could Do;
   font-weight: bold; 
-  font-size: 1.1rem ; 
+  font-size: 1rem ; 
 
   color: #F8F8F8; 
   background-color: transparent; 
@@ -237,7 +237,7 @@ article.talk {
 .todo-list {
   font-family: Nothing You Could Do;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
 
   color: #F8F8F8;
 
@@ -257,7 +257,7 @@ article.talk {
 
 .todo-listelement-text:hover {
   text-decoration: line-through;
-  font-size: 1.15rem;
+  font-size: 3rem;
 }
 
 .todo-listelement-delete {
