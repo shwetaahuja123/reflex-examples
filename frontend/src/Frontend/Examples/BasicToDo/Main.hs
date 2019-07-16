@@ -49,7 +49,7 @@ inputW = do
       & inputElementConfig_setValue .~ fmap (const "") send
       & inputElementConfig_elementConfig . elementConfig_initialAttributes .~
         ("id" =: "todo-input"
-         <> "placeholder" =: " What do you want to achieve?"
+         <> "placeholder" =: "Enter task"
          <> "onfocus" =: "this.placeholder = ' What do you want to achieve?'; setTimeout(()=>this.placeholder = '', 9000)")
     -- inputElement with content reset on send
   return $ tag (current $ _inputElement_value input) send
@@ -71,7 +71,12 @@ listW e = do
         -- merge delete events
   return ()
 
+taskW :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
+  => Event t T.Text -> m ()
+taskW t = elClass "span" "task" $ 
+              dynText =<< holdDyn "" t
+
 app :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m) => m ()
 app = elAttr "div" ("id" =: "todo-background" <>
                 "onclick" =: "document.getElementById('todo-input').focus()") $ do
-        inputW >>= listW
+        inputW >>= taskW

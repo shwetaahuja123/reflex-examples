@@ -263,3 +263,16 @@ article.talk {
 .todo-listelement-delete {
   display: none;
 }
+
+.task {
+  font-family: Nothing You Could Do;
+  font-weight: bold;
+  font-size: 1rem;
+
+  color: white;
+}
+
+.task:hover {
+  text-decoration: line-through;
+  font-size: 3rem;
+}
