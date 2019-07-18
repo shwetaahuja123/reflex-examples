@@ -49,8 +49,8 @@ inputW = do
       & inputElementConfig_setValue .~ fmap (const "") send
       & inputElementConfig_elementConfig . elementConfig_initialAttributes .~
         ("id" =: "todo-input"
-         <> "placeholder" =: "Enter task"
-         <> "onfocus" =: "this.placeholder = ' What do you want to achieve?'; setTimeout(()=>this.placeholder = '', 9000)")
+         <> "placeholder" =: "define hunter task"
+         <> "onfocus" =: "this.placeholder = 'define hunter task'; setTimeout(()=>this.placeholder = '', 9000)")
     -- inputElement with content reset on send
   return $ tag (current $ _inputElement_value input) send
   -- tag the send signal with the inputText value BEFORE resetting

@@ -231,7 +231,8 @@ article.talk {
 
 #todo-input::placeholder {
   color: #F8F8F8;
-  font-weight: normal;
+  font-weight: bold;
+  font-size: 1.5rem ;
 }
 
 .todo-list {
