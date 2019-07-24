@@ -217,7 +217,7 @@ article.talk {
 #todo-input {
   font-family: Nothing You Could Do;
   font-weight: bold; 
-  font-size: 1rem ; 
+  font-size: 1.5rem ; 
 
   color: #F8F8F8; 
   background-color: transparent; 
@@ -232,7 +232,7 @@ article.talk {
 #todo-input::placeholder {
   color: #F8F8F8;
   font-weight: bold;
-  font-size: 1.5rem ;
+  font-size: 1.5rem;
 }
 
 .todo-list {
@@ -268,12 +268,14 @@ article.talk {
 .task {
   font-family: Nothing You Could Do;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.5rem;
 
   color: white;
+
+  margin-left: 4%;
 }
 
 .task:hover {
   text-decoration: line-through;
-  font-size: 3rem;
+  font-size: 5rem;
 }
