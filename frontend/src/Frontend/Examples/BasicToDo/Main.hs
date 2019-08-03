@@ -27,11 +27,9 @@ app = elAttr "div" ("id" =: "todo-background" <>
 
               modAttrsEv = getModAttrs <$> (True <$ enter)
               getModAttrs :: B.Bool -> M.Map AttributeName (Maybe T.Text)
-              getModAttrs b = "disabled" =: Just (B.bool "false" "true" b)
-                              <> "placeholder" =: Just (B.bool "define hunter task" "" b)
+              getModAttrs b = "style" =: Just ("visibility: " <> B.bool "visible" "hidden" b)
 
           input <- inputElement $ def
-            & inputElementConfig_setValue .~ fmap (const "") enter
             & inputElementConfig_elementConfig . elementConfig_initialAttributes .~
               ("id" =: "todo-input"
                <> "placeholder" =: "define hunter task")
