@@ -18,65 +18,17 @@ import           Reflex.Dom
 import           Control.Monad.Fix (MonadFix)
 
 
-type MM a = M.Map Int a
-
--- add a new value to a map, automatically choosing an unused key
-new :: a -> MM a -> MM a
-new v m = case M.maxViewWithKey m of
-  Nothing          -> [(0,v)] -- overloadedlists
-  Just ((k, _), _) -> M.insert (succ k) v m
-
--- output the ul of the elements of the given map and return the delete
--- event for each key
-ulW :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
-  => Dynamic t (MM T.Text) -> m (Dynamic t (MM (Event t Int)))
-ulW xs = elClass "ul" "todo-list" $ listWithKey xs $ \k x -> elClass "li" "todo-listelement" $ do
-  e <- fmap (const k) <$> (el "label" $ do
-                             elClass "span" "todo-listelement-text" $ dynText x
-                             ev <- elClass "span" "todo-listelement-delete" (button "x")
-                             pure ev
-                           )
-  return e
-
--- output an input text widget with auto clean on return and return an
--- event firing on return containing the string before clean
-inputW :: (DomBuilder t m, MonadFix m) => m (Event t T.Text)
-inputW = do
-  rec
-    let send = keypress Enter input
-        -- send signal firing on *return* key press
-    input <- inputElement $ def
-      & inputElementConfig_setValue .~ fmap (const "") send
-      & inputElementConfig_elementConfig . elementConfig_initialAttributes .~
-        ("id" =: "todo-input"
-         <> "placeholder" =: "define hunter task"
-         <> "onfocus" =: "this.placeholder = 'define hunter task'; setTimeout(()=>this.placeholder = '', 9000)")
-    -- inputElement with content reset on send
-  return $ tag (current $ _inputElement_value input) send
-  -- tag the send signal with the inputText value BEFORE resetting
-
--- circuit ulW with a MM String kept updated by new strings from the passed
--- event and deletion of single element in the MM
-listW :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
-  => Event t T.Text -> m ()
-listW e = do
-  rec
-    xs <- foldDyn ($) M.empty $ mergeWith (.)
-    -- live state, updated by two signals
-        [   fmap new e -- insert a new text
-        ,   switch . current $ zs  -- delete text at specific keys
-        ]
-    bs <- ulW xs -- delete signals from outputted state
-    let zs = fmap (mergeWith (.) . map (fmap M.delete) . M.elems) bs
-        -- merge delete events
-  return ()
-
-taskW :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m)
-  => Event t T.Text -> m ()
-taskW t = elClass "span" "task" $ 
-              dynText =<< holdDyn "" t
-
 app :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m) => m ()
 app = elAttr "div" ("id" =: "todo-background" <>
                 "onclick" =: "document.getElementById('todo-input').focus()") $ do
-        inputW >>= taskW
+        rec
+          let enter = keypress Enter input
+          input <- inputElement $ def
+            & inputElementConfig_setValue .~ fmap (const "") enter
+            & inputElementConfig_elementConfig . elementConfig_initialAttributes .~
+              ("id" =: "todo-input"
+               <> "placeholder" =: "define hunter task")
+
+          let taskEv = tagPromptlyDyn (_inputElement_value input) enter
+          divClass "task" $ dynText =<< holdDyn "" taskEv
+        pure()
