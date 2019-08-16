@@ -222,8 +222,8 @@ article.talk {
   color: #F8F8F8; 
   background-color: transparent; 
 
-  margin-top: 1.5%; 
   width: 100%;
+  height: 100%;
 
   border: none;
   outline: none;
@@ -272,7 +272,10 @@ article.talk {
 
   color: white;
 
-  margin-left: 4%;
+  padding-top: 7%;
+  padding-left: 4%;
+  width: 100%;
+  height: 100%;
 }
 
 .task:hover {

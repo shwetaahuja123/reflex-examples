@@ -20,8 +20,7 @@ import           Control.Monad.Fix (MonadFix)
 
 
 app :: (DomBuilder t m, PostBuild t m, MonadFix m, MonadHold t m) => m ()
-app = elAttr "div" ("id" =: "todo-background" <>
-                "onclick" =: "document.getElementById('todo-input').focus()") $ do
+app = elAttr "div" ("id" =: "todo-background") $ do
         rec
           let enter         = keypress Enter input
               ev1           = leftmost [ True <$ enter
@@ -29,13 +28,13 @@ app = elAttr "div" ("id" =: "todo-background" <>
                                ]
               modAttrsEv    = getModAttrs <$> ev1
               getModAttrs :: B.Bool -> M.Map AttributeName (Maybe T.Text)
-              getModAttrs b = "style" =: Just ("visibility: " <> B.bool "visible" "hidden" b)
+              getModAttrs b = "style" =: Just ("display: " <> B.bool "inline" "none" b)
           input <- inputElement $
             def
               & inputElementConfig_setValue .~ fmap (const "") enter
               & inputElementConfig_elementConfig . elementConfig_initialAttributes .~
                   ("id" =: "todo-input"
-                  <> "placeholder" =: "define hunter task")
+                  <> "placeholder" =: "enter hunter task")
               & inputElementConfig_elementConfig . elementConfig_modifyAttributes .~ modAttrsEv
 
           let taskEv  = tagPromptlyDyn (_inputElement_value input) enter
